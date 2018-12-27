@@ -19,16 +19,21 @@ def load_proxies():
     driver = webdriver.PhantomJS()
     driver.set_window_size(1120, 550)
     driver.get(proxy_url)
-    driver.find_element_by_xpath("/html/body/section[1]/div/div[2]/div/div[1]/div[2]/div/label/input").send_keys("India")
+    driver.find_element_by_xpath("/html/body/section[1]/div/div[2]/div/div[1]/div[2]/div/label/input").send_keys(
+        "India")
     driver.find_element_by_xpath("/html/body/section[1]/div/div[2]/div/div[2]/div/table/thead/tr/th[5]").click()
     scrapper_count = 0
     while True:
         scrapper_count += 1
         try:
-            ip_xpath = "/html/body/section[1]/div/div[2]/div/div[2]/div/table/tbody/tr[" + str(scrapper_count) + "]/td[1]"
-            port_xpath = "/html/body/section[1]/div/div[2]/div/div[2]/div/table/tbody/tr[" + str(scrapper_count) + "]/td[2]"
-            country_code_xpath = "/html/body/section[1]/div/div[2]/div/div[2]/div/table/tbody/tr[" + str(scrapper_count) + "]/td[3]"
-            proxy_type_xpath = "/html/body/section[1]/div/div[2]/div/div[2]/div/table/tbody/tr[" + str(scrapper_count) + "]/td[5]"
+            ip_xpath = "/html/body/section[1]/div/div[2]/div/div[2]/div/table/tbody/tr[" + str(
+                scrapper_count) + "]/td[1]"
+            port_xpath = "/html/body/section[1]/div/div[2]/div/div[2]/div/table/tbody/tr[" + str(
+                scrapper_count) + "]/td[2]"
+            country_code_xpath = "/html/body/section[1]/div/div[2]/div/div[2]/div/table/tbody/tr[" + str(
+                scrapper_count) + "]/td[3]"
+            proxy_type_xpath = "/html/body/section[1]/div/div[2]/div/div[2]/div/table/tbody/tr[" + str(
+                scrapper_count) + "]/td[5]"
             ip = driver.find_element_by_xpath(ip_xpath).text
             port = driver.find_element_by_xpath(port_xpath).text
             country_code = driver.find_element_by_xpath(country_code_xpath).text
@@ -71,7 +76,8 @@ def content_sorter(html_data, news_id):
 
     while True:
         headline = html_data[html_data.find('itemprop="headline"') + len('itemprop="headline"') + 1:
-                             html_data.find("</span>", html_data.find('itemprop="headline"') + len('itemprop="headline"'))]
+                             html_data.find("</span>",
+                                            html_data.find('itemprop="headline"') + len('itemprop="headline"'))]
         article_body = html_data[html_data.find('itemprop="articleBody">') + len('itemprop="articleBody">'):
                                  html_data.find('</div>', html_data.find('itemprop="articleBody">')
                                                 + len('itemprop="articleBody">'))]
@@ -81,21 +87,31 @@ def content_sorter(html_data, news_id):
                            html_data.find('">', html_data.find('href="', html_data.find('<div class="read-more">'))
                                           + len('href="'))]
         data.append([news_id, date, headline, article_body, source])
-
+        with open('news.txt', 'a+') as file:
+            content_to_write = news_id + '\t' + date + '\t' + headline + '\t' + article_body + '\t' + source + '\n'
+            file.write(content_to_write)
         if html_data.find('<div class="news-card z-depth-1"') == -1:
             break
         html_data = html_data[html_data.find('<div class="news-card z-depth-1"') + 10:]
 
 
-url = "https://inshorts.com/en/read"
-session = requests.Session()
-result = session.get(url)
-html_code = result.text
-min_news_id = html_code[html_code.find("min_news_id") + 15: html_code.find("\"", html_code.find("min_news_id") + 16)]
+try:
+    with open('news.txt', 'r') as file:
+        existing_news_data = file.read()
+        existing_news_data = existing_news_data.split('\n')
+        min_news_id = existing_news_data[-2]
+        min_news_id = min_news_id.split('\t')[0]
+
+except FileNotFoundError:
+    url = "https://inshorts.com/en/read"
+    session = requests.Session()
+    result = session.get(url)
+    html_code = result.text
+    min_news_id = html_code[
+                  html_code.find("min_news_id") + 15: html_code.find("\"", html_code.find("min_news_id") + 16)]
 
 count = 1
-
-while count < 20:
+while count < 10:
     print("Loading the news for the {} time...".format(count))
     json_news = load_news(min_news_id)
     while True:
@@ -113,9 +129,9 @@ workbook = Workbook()
 sheet = workbook.add_sheet('Sheet 1')
 print("Writing the data to the 'news.xls' file...")
 for i in range(len(data)):
-    sheet.write(i+1, 0, data[i][0])
-    sheet.write(i+1, 1, data[i][1])
-    sheet.write(i+1, 2, data[i][2])
-    sheet.write(i+1, 3, data[i][3])
-    sheet.write(i+1, 4, data[i][4])
+    sheet.write(i + 1, 0, data[i][0])
+    sheet.write(i + 1, 1, data[i][1])
+    sheet.write(i + 1, 2, data[i][2])
+    sheet.write(i + 1, 3, data[i][3])
+    sheet.write(i + 1, 4, data[i][4])
 workbook.save('news.xls')
