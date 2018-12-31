@@ -1,9 +1,10 @@
 import requests
+import html
 import time
-from xlwt import Workbook
 from selenium import webdriver
 import random
 import urllib3
+import csv
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
@@ -87,9 +88,11 @@ def content_sorter(html_data, news_id):
                            html_data.find('">', html_data.find('href="', html_data.find('<div class="read-more">'))
                                           + len('href="'))]
         data.append([news_id, date, headline, article_body, source])
-        with open('news.txt', 'a+') as file:
-            content_to_write = news_id + '\t' + date + '\t' + headline + '\t' + article_body + '\t' + source + '\n'
-            file.write(content_to_write)
+        with open('news.csv', 'a+') as file:
+            content_to_write = [[html.unescape(news_id), html.unescape(date), html.unescape(headline),
+                                 html.unescape(article_body), html.unescape(source)]]
+            writer = csv.writer(file)
+            writer.writerows(content_to_write)
         if html_data.find('<div class="news-card z-depth-1"') == -1:
             break
         html_data = html_data[html_data.find('<div class="news-card z-depth-1"') + 10:]
@@ -125,13 +128,4 @@ while count < 10:
     time.sleep(5)
     count += 1
 
-workbook = Workbook()
-sheet = workbook.add_sheet('Sheet 1')
-print("Writing the data to the 'news.xls' file...")
-for i in range(len(data)):
-    sheet.write(i + 1, 0, data[i][0])
-    sheet.write(i + 1, 1, data[i][1])
-    sheet.write(i + 1, 2, data[i][2])
-    sheet.write(i + 1, 3, data[i][3])
-    sheet.write(i + 1, 4, data[i][4])
-workbook.save('news.xls')
+
