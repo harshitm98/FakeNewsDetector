@@ -64,11 +64,14 @@ def load_news(news_id):
         'news_offset': news_id
     }
     post_url = "https://inshorts.com/en/ajax/more_news"
-    try:
-        news = requests.post(post_url, payload, proxies=proxy_dict).json()
-    except urllib3.exceptions.MaxRetryError:
-        print("Max retry error. Connecting again to the proxy...")
-        return 0
+    while True:
+        try:
+            news = requests.post(post_url, payload, proxies=proxy_dict).json()
+            break
+        except (urllib3.exceptions.MaxRetryError, ConnectionRefusedError, requests.exceptions.ProxyError,
+                urllib3.exceptions.NewConnectionError):
+            print("Error occured with proxy...\nUpdating the proxy...")
+            proxy_dict = choose_proxies()
     return news
 
 
@@ -87,11 +90,13 @@ def content_sorter(html_data, news_id):
         source = html_data[html_data.find('href="', html_data.find('<div class="read-more">')) + len('href="'):
                            html_data.find('">', html_data.find('href="', html_data.find('<div class="read-more">'))
                                           + len('href="'))]
-        data.append([news_id, date, headline, article_body, source])
-        with open('news.csv', 'a+') as file:
-            content_to_write = [[html.unescape(news_id), html.unescape(date), html.unescape(headline),
-                                 html.unescape(article_body), html.unescape(source)]]
-            writer = csv.writer(file)
+        with open('news.csv', 'a+') as write_file:
+            date = html.unescape(date)
+            headline = html.unescape(headline)
+            article_body = html.unescape(article_body)
+            source = html.unescape(source)
+            content_to_write = [[news_id, date, headline, article_body, source]]
+            writer = csv.writer(write_file)
             writer.writerows(content_to_write)
         if html_data.find('<div class="news-card z-depth-1"') == -1:
             break
@@ -117,15 +122,10 @@ count = 1
 while count < 10:
     print("Loading the news for the {} time...".format(count))
     json_news = load_news(min_news_id)
-    while True:
-        if json_news == 0:
-            json_news = load_news(min_news_id)
-        else:
-            break
-    html = json_news["html"]
+    html_ = json_news["html"]
     min_news_id = json_news["min_news_id"]
-    content_sorter(html, min_news_id)
-    time.sleep(5)
+    content_sorter(html_, min_news_id)
+    time.sleep(5)  # So that there are not too many consecutive request and the server does not crash! :)
     count += 1
 
 
