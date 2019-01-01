@@ -75,10 +75,11 @@ def load_news(news_id):
     return news
 
 
-def content_sorter(html_data, news_id):
+def content_sorter(html_data, news_id, code, latest_heading=''):
     html_data = html_data[html_data.find('<div class="news-card z-depth-1"') + 10:]
 
     while True:
+        # TODO: Code clean up
         headline = html_data[html_data.find('itemprop="headline"') + len('itemprop="headline"') + 1:
                              html_data.find("</span>",
                                             html_data.find('itemprop="headline"') + len('itemprop="headline"'))]
@@ -90,25 +91,78 @@ def content_sorter(html_data, news_id):
         source = html_data[html_data.find('href="', html_data.find('<div class="read-more">')) + len('href="'):
                            html_data.find('">', html_data.find('href="', html_data.find('<div class="read-more">'))
                                           + len('href="'))]
-        with open('news.csv', 'a+') as write_file:
+        if code == 0:
+            with open('news.csv', 'a+') as write_file:
+                date = html.unescape(date)
+                headline = html.unescape(headline)
+                article_body = html.unescape(article_body)
+                source = html.unescape(source)
+                content_to_write = [[news_id, date, headline, article_body, source]]
+                writer = csv.writer(write_file)
+                writer.writerows(content_to_write)
+            if html_data.find('<div class="news-card z-depth-1"') == -1:
+                break
+        elif code == 1:
             date = html.unescape(date)
             headline = html.unescape(headline)
             article_body = html.unescape(article_body)
             source = html.unescape(source)
-            content_to_write = [[news_id, date, headline, article_body, source]]
-            writer = csv.writer(write_file)
-            writer.writerows(content_to_write)
-        if html_data.find('<div class="news-card z-depth-1"') == -1:
-            break
+            data.append([news_id, date, headline, article_body, source])
+            if headline == latest_heading:
+                with open('news.csv', 'w') as write_file:
+                    writer = csv.writer(write_file)
+                    writer.writerows(data)
+                    write_file.write(existing_news_data)
+                break
+            if html_data.find('<div class="news-card z-depth-1"') == -1:
+                with open('news.csv', 'w') as write_file:
+                    writer = csv.writer(write_file)
+                    writer.writerows(data)
+                    write_file.write("\n".join(existing_news_data))
+                break
+        else:
+            date = html.unescape(date)
+            headline = html.unescape(headline)
+            article_body = html.unescape(article_body)
+            source = html.unescape(source)
+            data.append([news_id, date, headline, article_body, source])
+            if html_data.find('<div class="news-card z-depth-1"') == -1:
+                break
+
         html_data = html_data[html_data.find('<div class="news-card z-depth-1"') + 10:]
 
 
+def get_latest_news():
+    latest_heading = existing_news_data[0].split(',')[2]
+    url = "https://inshorts.com/en/read"
+    session = requests.Session()
+    result = session.get(url)
+    html_code = result.text
+    min_news_id = html_code[
+                  html_code.find("min_news_id") + 15: html_code.find("\"", html_code.find("min_news_id") + 16)]
+    if html_code.__contains__(latest_heading):
+        content_sorter(html_code, min_news_id, 1, latest_heading)
+    else:
+        while True:
+            more_news = load_news(min_news_id)
+            min_news_id = more_news["min_news_id"]
+            html_news = more_news["html"]
+            if html_news.__contains__(latest_heading):
+                print("Heading matched...")
+                content_sorter(html_news, min_news_id,1, latest_heading)
+                break
+            else:
+                print("Heading did not matched...Fetching more news...")
+                content_sorter(html_news, min_news_id, 2)
+
+
 try:
-    with open('news.txt', 'r') as file:
+    with open('news.csv', 'r') as file:
         existing_news_data = file.read()
         existing_news_data = existing_news_data.split('\n')
         min_news_id = existing_news_data[-2]
-        min_news_id = min_news_id.split('\t')[0]
+        min_news_id = min_news_id.split(',')[0]
+    get_latest_news()
 
 except FileNotFoundError:
     url = "https://inshorts.com/en/read"
@@ -119,13 +173,12 @@ except FileNotFoundError:
                   html_code.find("min_news_id") + 15: html_code.find("\"", html_code.find("min_news_id") + 16)]
 
 count = 1
-while count < 10:
-    print("Loading the news for the {} time...".format(count))
+while count <= 10:
+    print("Iteration number {}...".format(count))
     json_news = load_news(min_news_id)
     html_ = json_news["html"]
     min_news_id = json_news["min_news_id"]
-    content_sorter(html_, min_news_id)
+    content_sorter(html_, min_news_id, 0)
     time.sleep(5)  # So that there are not too many consecutive request and the server does not crash! :)
     count += 1
-
 
