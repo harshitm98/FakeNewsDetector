@@ -16,20 +16,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/news_scrapper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="112">
-              <caret line="160" column="8" selection-start-line="160" selection-start-column="8" selection-end-line="160" selection-end-column="8" />
+            <state relative-caret-position="455">
+              <caret line="200" lean-forward="true" selection-start-line="200" selection-end-line="200" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/news.csv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8685">
-              <caret line="579" lean-forward="true" selection-start-line="579" selection-end-line="579" />
             </state>
           </provider>
         </entry>
@@ -54,6 +45,7 @@
     <option name="PREVIOUS_COMMIT_AUTHORS">
       <list>
         <option value="harshitm98 &lt;harshitmah98@gmail.com&gt;" />
+        <option value="harshitm98 &lt;harshitmah98@gmail.com&gt;i" />
         <option value="harshitm98" />
       </list>
     </option>
@@ -81,6 +73,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -92,7 +85,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -213,10 +205,17 @@
       <option name="project" value="LOCAL" />
       <updated>1546267621964</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Fetches latest news">
+      <created>1546366796999</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1546366796999</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
-  <component name="TodoView">
+  <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
     </todo-panel>
@@ -227,13 +226,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1366" height="743" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18912882" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32899022" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.30944625" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.9136808" />
       <window_info anchor="bottom" id="Cvs" order="3" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="4" weight="0.4" />
       <window_info anchor="bottom" id="Debug" order="5" sideWeight="0.6917349" weight="0.44625407" />
@@ -241,7 +241,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.48859936" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32899022" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.3082651" side_tool="true" weight="0.44299674" />
-      <window_info anchor="bottom" id="Python Console" order="10" weight="0.32899022" />
+      <window_info anchor="bottom" id="Python Console" order="10" weight="0.47557002" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -291,6 +291,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Loads consecutive news" />
     <MESSAGE value="Indexing the scrapped data" />
     <MESSAGE value="Added Proxies" />
@@ -298,17 +299,11 @@
     <MESSAGE value="Writes all the data to a text file." />
     <MESSAGE value="Directly writes to CSV file" />
     <MESSAGE value="Proxy bug fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Proxy bug fixed" />
+    <MESSAGE value="Fetches latest news" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fetches latest news" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/news_scrapper.py</url>
-          <line>70</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint suspend="NONE" type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -415,8 +410,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/news_scrapper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="160" column="8" selection-start-line="160" selection-start-column="8" selection-end-line="160" selection-end-column="8" />
+        <state relative-caret-position="455">
+          <caret line="200" lean-forward="true" selection-start-line="200" selection-end-line="200" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>

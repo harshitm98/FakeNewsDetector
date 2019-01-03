@@ -12,6 +12,11 @@ headers = {
 
 data = []
 proxy_list = []
+proxy_flag = 0
+proxy_dict = {
+    "https": '',
+    "http": ''
+}
 
 
 def load_proxies():
@@ -40,7 +45,7 @@ def load_proxies():
             country_code = driver.find_element_by_xpath(country_code_xpath).text
             proxy_type = driver.find_element_by_xpath(proxy_type_xpath).text
             if proxy_type == "elite proxy" and country_code == "IN":
-                proxy_list.append([ip, port])
+                proxy_list.append([ip, port, scrapper_count-1])
         except Exception:
             break
 
@@ -50,15 +55,17 @@ def choose_proxies():
         load_proxies()
     proxy = random.choice(proxy_list)
     final_proxy = proxy[0] + ":" + proxy[1]
-    proxy_dict = {
-        "http": final_proxy,
-        "https": final_proxy
-    }
-    return proxy_dict
+    print("Current proxy is {}".format(final_proxy))
+    return final_proxy
 
 
 def load_news(news_id):
-    proxy_dict = choose_proxies()
+    global proxy_flag, proxy_dict
+    if proxy_flag == 0:
+        proxy = choose_proxies()
+        proxy_dict['https'] = proxy
+        proxy_dict['http'] = proxy
+        proxy_flag = 1
     payload = {
         'category': '',
         'news_offset': news_id
@@ -69,9 +76,17 @@ def load_news(news_id):
             news = requests.post(post_url, payload, proxies=proxy_dict).json()
             break
         except (urllib3.exceptions.MaxRetryError, ConnectionRefusedError, requests.exceptions.ProxyError,
-                urllib3.exceptions.NewConnectionError):
-            print("Error occured with proxy...\nUpdating the proxy...")
-            proxy_dict = choose_proxies()
+                urllib3.exceptions.NewConnectionError, requests.exceptions.SSLError):
+            print("Updating the proxy...")
+            ip = str(proxy_dict['https']).split(':')[0]
+            for i in range(len(proxy_list)):
+                if proxy_list[i][0] == ip:
+                    proxy_list.pop(i)
+                    print("Proxy list updated...")
+                    break
+            proxy = choose_proxies()
+            proxy_dict['https'] = proxy
+            proxy_dict['http'] = proxy
     return news
 
 
@@ -144,12 +159,13 @@ def get_latest_news():
         content_sorter(html_code, min_news_id, 1, latest_heading)
     else:
         while True:
+            time.sleep(5)
             more_news = load_news(min_news_id)
             min_news_id = more_news["min_news_id"]
             html_news = more_news["html"]
             if html_news.__contains__(latest_heading):
                 print("Heading matched...")
-                content_sorter(html_news, min_news_id,1, latest_heading)
+                content_sorter(html_news, min_news_id, 1, latest_heading)
                 break
             else:
                 print("Heading did not matched...Fetching more news...")
@@ -181,4 +197,5 @@ while count <= 10:
     content_sorter(html_, min_news_id, 0)
     time.sleep(5)  # So that there are not too many consecutive request and the server does not crash! :)
     count += 1
+
 
