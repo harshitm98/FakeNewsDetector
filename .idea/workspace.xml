@@ -16,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/news_scrapper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="455">
-              <caret line="200" lean-forward="true" selection-start-line="200" selection-end-line="200" />
+            <state relative-caret-position="75">
+              <caret line="95" column="15" selection-start-line="95" selection-start-column="15" selection-end-line="95" selection-end-column="15" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -38,7 +38,7 @@
     <findStrings>
       <find>data</find>
       <find>html</find>
-      <find>data</find>
+      <find>for</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -212,7 +212,14 @@
       <option name="project" value="LOCAL" />
       <updated>1546366796999</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Does not update proxy on each iteration">
+      <created>1546549340314</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1546549340317</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -300,7 +307,8 @@
     <MESSAGE value="Directly writes to CSV file" />
     <MESSAGE value="Proxy bug fixed" />
     <MESSAGE value="Fetches latest news" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fetches latest news" />
+    <MESSAGE value="Does not update proxy on each iteration" />
+    <option name="LAST_COMMIT_MESSAGE" value="Does not update proxy on each iteration" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -410,8 +418,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/news_scrapper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="455">
-          <caret line="200" lean-forward="true" selection-start-line="200" selection-end-line="200" />
+        <state relative-caret-position="75">
+          <caret line="95" column="15" selection-start-line="95" selection-start-column="15" selection-end-line="95" selection-end-column="15" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>

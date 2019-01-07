@@ -94,35 +94,29 @@ def content_sorter(html_data, news_id, code, latest_heading=''):
     html_data = html_data[html_data.find('<div class="news-card z-depth-1"') + 10:]
 
     while True:
-        # TODO: Code clean up
-        headline = html_data[html_data.find('itemprop="headline"') + len('itemprop="headline"') + 1:
+        headline = html.unescape(html_data[html_data.find('itemprop="headline"') + len('itemprop="headline"') + 1:
                              html_data.find("</span>",
-                                            html_data.find('itemprop="headline"') + len('itemprop="headline"'))]
-        article_body = html_data[html_data.find('itemprop="articleBody">') + len('itemprop="articleBody">'):
+                                            html_data.find('itemprop="headline"') + len('itemprop="headline"'))])
+        article_body = html.unescape(html_data[html_data.find('itemprop="articleBody">') + len('itemprop="articleBody">'):
                                  html_data.find('</div>', html_data.find('itemprop="articleBody">')
-                                                + len('itemprop="articleBody">'))]
-        date = html_data[html_data.find('<span class="date">') + len('<span class="date">'):
-                         html_data.find('</span>', html_data.find('<span class="date">') + len('<span class="date">'))]
-        source = html_data[html_data.find('href="', html_data.find('<div class="read-more">')) + len('href="'):
+                                                + len('itemprop="articleBody">'))])
+        date = html.unescape(html_data[html_data.find('<span class="date">') + len('<span class="date">'):
+                         html_data.find('</span>', html_data.find('<span class="date">') + len('<span class="date">'))])
+        source = html.unescape(html_data[html_data.find('href="', html_data.find('<div class="read-more">')) + len('href="'):
                            html_data.find('">', html_data.find('href="', html_data.find('<div class="read-more">'))
-                                          + len('href="'))]
+                                          + len('href="'))])
         if code == 0:
             with open('news.csv', 'a+') as write_file:
-                date = html.unescape(date)
-                headline = html.unescape(headline)
-                article_body = html.unescape(article_body)
-                source = html.unescape(source)
                 content_to_write = [[news_id, date, headline, article_body, source]]
                 writer = csv.writer(write_file)
                 writer.writerows(content_to_write)
             if html_data.find('<div class="news-card z-depth-1"') == -1:
                 break
         elif code == 1:
-            date = html.unescape(date)
-            headline = html.unescape(headline)
-            article_body = html.unescape(article_body)
-            source = html.unescape(source)
             data.append([news_id, date, headline, article_body, source])
+            with open('latest_news.csv', 'w+') as write_latest_file:
+                writer = csv.writer(write_latest_file)
+                writer.writerows([[news_id, date, headline, article_body, source]])
             if headline == latest_heading:
                 with open('news.csv', 'w') as write_file:
                     writer = csv.writer(write_file)
@@ -198,4 +192,6 @@ while count <= 10:
     time.sleep(5)  # So that there are not too many consecutive request and the server does not crash! :)
     count += 1
 
-
+# TODO: Modify the news.csv file as it fetches the data. Because the code is still not full proof and can not afford
+#  to put such much traffic
+# TODO: Do not change the proxy if it works
